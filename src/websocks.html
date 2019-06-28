@@ -34,7 +34,7 @@
       var port = 8000;
       function onConnect() {
         console.log("Connected.");
-        //mqtt.subscribe("webdeviot/bestboiz");
+        mqtt.subscribe("webdeviot/bestboiz");
         message = new Paho.MQTT.Message("");
         message.destinationName = "webdeviot/bestboiz";
         mqtt.send(message);
@@ -48,6 +48,7 @@
           onFailure: onFailure
         };
         mqtt.onMessageArrived = onMessageArrived;
+        mqtt.onConnectionLost = onConnectionLost;
         mqtt.connect(options);
       }
       function onFailure(message) {
@@ -57,7 +58,13 @@
       function onMessageArrived(msg) {
         out_msg = "Message received " + msg.payloadString + "<br>";
         out_msg = out_msg + "Message received Topic " + msg.destinationName;
-        console.log(out_msg);
+        console.log(Date(), out_msg);
+      }
+
+      function onConnectionLost(responseObject) {
+        if (responseObject.errorCode !== 0) {
+          console.log("onConnectionLost:" + responseObject.errorMessage);
+        }
       }
       MQTTconnect();
       // Create a "close" button and append it to each list item
@@ -80,16 +87,14 @@
         };
       }
       // Add a "checked" symbol when clicking on a list item
+
       var list = document.querySelector("ul");
-      list.addEventListener(
-        "click",
-        function(ev) {
-          if (ev.target.tagName === "LI") {
-            ev.target.classList.toggle("checked");
-          }
-        },
-        false
-      );
+      list.addEventListener("click", function(ev) {
+        if (ev.target.tagName === "LI") {
+          ev.target.classList.add("checked");
+        }
+      });
+
       // Create a new list item when clicking on the "Add" button
       function newElement() {
         var li = document.createElement("li");

@@ -11,6 +11,10 @@ using namespace std;
 Ultrasonic ultrasonic(14);
 rgb_lcd lcd;
 
+const int buttonPin = 34;
+
+int buttonState = 0;
+
 const int colorR = 255;
 const int colorG = 0;
 const int colorB = 0;
@@ -33,15 +37,14 @@ void callback(char *topic, byte *payload, unsigned int length)
   Serial.print(topic);
   Serial.println();
 
-  Serial.print("Message: ");
+  Serial.println("Message: ");
   for (int i = 0; i < length; i++)
   {
     Serial.print((char)payload[i]);
     char str = (char)payload[i];
     mitbewohner.push_back(str);
   }
-
-  Serial.println("----------------------");
+  Serial.print("\n");
 }
 
 void setup()
@@ -92,13 +95,17 @@ void setup()
 
   lcd.setRGB(colorR, colorG, colorB);
   // pinMode(6, OUTPUT);
+<<<<<<< Updated upstream
 
   // Schieberegler
   Serial.begin(9600); // init serial to 9600b/s
+=======
+  pinMode(buttonPin, INPUT);
+>>>>>>> Stashed changes
 }
 void loop()
 {
-
+  client.loop();
   long RangeInCentimeters;
 
   Serial.println("The distance to obstacles in front is: ");
@@ -126,10 +133,13 @@ void loop()
     lcd.println("Chris");
     lcd.setCursor(0, 1);
     lcd.println("Muell voll!");
+<<<<<<< Updated upstream
     digitalWrite(33, HIGH);
     delay(1000);
     digitalWrite(33, LOW);
     delay(1000);
+=======
+>>>>>>> Stashed changes
   }
 
   else if (RangeInCentimeters < 30)
@@ -146,13 +156,20 @@ void loop()
     lcd.setRGB(0, 255, 0);
     lcd.println("Alles OK");
   }
-  // set the cursor to column 0, line 1
-  // (note: line 1 is the second row, since counting begins with 0):
-  lcd.setCursor(0, 1);
-
-  // print the number of seconds since reset:
+  // set the cursor to column 0, line 1(note
+  //                                    : line 1 is the second row, since counting begins with 0) : lcd.setCursor(0, 1);
 
   delay(100);
 
+<<<<<<< Updated upstream
   client.loop();
+=======
+  if (digitalRead(buttonPin)) // when button is pressed
+  {
+    Serial.print("Button pressed!");
+    client.publish("webdeviot/bestboiz", "true");
+  }
+
+  delay(1000);
+>>>>>>> Stashed changes
 }

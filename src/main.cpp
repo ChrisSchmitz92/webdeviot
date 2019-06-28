@@ -5,6 +5,7 @@
 #include "rgb_lcd.h"
 #include <WiFi.h>
 #include <PubSubClient.h>
+
 using namespace std;
 
 Ultrasonic ultrasonic(14);
@@ -48,6 +49,8 @@ void setup()
   Serial.begin(9600);
   Serial.println();
 
+  pinMode(33, OUTPUT);
+
   // wifi connection
   WiFi.begin(ssid, password);
 
@@ -84,13 +87,14 @@ void setup()
   client.subscribe("webdeviot/bestboiz");
   client.publish("webdeviot/bestboiz", "123");
 
-  
-
   Serial.begin(9600);
   lcd.begin(16, 2, 17, 16);
 
   lcd.setRGB(colorR, colorG, colorB);
   // pinMode(6, OUTPUT);
+
+  // Schieberegler
+  Serial.begin(9600); // init serial to 9600b/s
 }
 void loop()
 {
@@ -118,22 +122,28 @@ void loop()
   if (RangeInCentimeters < 10)
   {
     lcd.clear();
+    lcd.setRGB(255, 0, 0);
     lcd.println("Chris");
     lcd.setCursor(0, 1);
     lcd.println("Muell voll!");
-    
+    digitalWrite(33, HIGH);
+    delay(1000);
+    digitalWrite(33, LOW);
+    delay(1000);
   }
 
   else if (RangeInCentimeters < 30)
   {
-    
+
     lcd.clear();
+    lcd.setRGB(255, 69, 0);
     lcd.println("Muell fast voll");
   }
   else
   {
-    
+
     lcd.clear();
+    lcd.setRGB(0, 255, 0);
     lcd.println("Alles OK");
   }
   // set the cursor to column 0, line 1
@@ -143,5 +153,6 @@ void loop()
   // print the number of seconds since reset:
 
   delay(100);
+
   client.loop();
 }
